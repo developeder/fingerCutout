@@ -168,7 +168,7 @@ class AffectViewController: UIViewController {
         if segue.identifier == "toEditorViewController" {
             let editor = segue.destination as! EditorViewController
             editor.image = inputImage
-            editor.edgeImage = self.cachedCalculationResults[self.selectedModel]
+//            editor.edgeImage = self.cachedCalculationResults[self.selectedModel]
         }
     }
     

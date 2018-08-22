@@ -44,9 +44,9 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
     // MARK: - imagePickerDelegate
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
         if let image = info[UIImagePickerControllerOriginalImage]  as? UIImage {
-            let edgesImage = doInferencePressed(image)
+//            let edgesImage = doInferencePressed(image)
             picker.dismiss(animated: true) {
-                let map = ["image": image, "edgesImage": edgesImage]
+                let map = ["image": image]//, "edgesImage": edgesImage]
                 self.performSegue(withIdentifier: segueToEditorVC, sender: map)
             }
         }
@@ -60,7 +60,7 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
             let vc = segue.destination as! EditorViewController
             let map = sender as! [String: UIImage]
             vc.image = map["image"]
-            vc.edgeImage = map["edgesImage"]
+//            vc.edgeImage = map["edgesImage"]
         }
     }
     
@@ -125,7 +125,5 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
         print("Inference is finished in \(endDate.timeIntervalSince(startDate)) for model: \("upscore-dsn3")")
         return resultImage
     }
-    
-
 }
 

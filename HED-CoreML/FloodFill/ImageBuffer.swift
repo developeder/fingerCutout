@@ -48,34 +48,34 @@ class ImageBuffer {
         return pixel.diff(newPixel)
     }
     
-    func previousColorDiff(pixel: Pixel) -> CGFloat {
-        struct Holder {
-            static var average: Pixel?
-            static var counter: Int = 1
-        }
-        if Holder.average == nil {
-            Holder.average = Pixel(pixel.data.r, pixel.data.g, pixel.data.b, pixel.data.a)
-            return 0.0
-        }
-        
-        let diff = pixel.diff(Holder.average!)
-        let a = (Int(Holder.average!.data.a) * Holder.counter + Int(pixel.data.a)) / (Holder.counter + 1)
-        let r = (Int(Holder.average!.data.r) * Holder.counter + Int(pixel.data.r)) / (Holder.counter + 1)
-        let g = (Int(Holder.average!.data.g) * Holder.counter + Int(pixel.data.g)) / (Holder.counter + 1)
-        let b = (Int(Holder.average!.data.b) * Holder.counter + Int(pixel.data.b)) / (Holder.counter + 1)
-        Holder.average = Pixel(UInt8(r), UInt8(g), UInt8(b), UInt8(a))
-        Holder.counter += 1
-        return CGFloat(diff)
-    }
+//    func previousColorDiff(pixel: Pixel) -> CGFloat {
+//        struct Holder {
+//            static var average: Pixel?
+//            static var counter: Int = 1
+//        }
+//        if Holder.average == nil {
+//            Holder.average = Pixel(pixel.data.r, pixel.data.g, pixel.data.b, pixel.data.a)
+//            return 0.0
+//        }
+//
+//        let diff = pixel.diff(Holder.average!)
+//        let a = (Int(Holder.average!.data.a) * Holder.counter + Int(pixel.data.a)) / (Holder.counter + 1)
+//        let r = (Int(Holder.average!.data.r) * Holder.counter + Int(pixel.data.r)) / (Holder.counter + 1)
+//        let g = (Int(Holder.average!.data.g) * Holder.counter + Int(pixel.data.g)) / (Holder.counter + 1)
+//        let b = (Int(Holder.average!.data.b) * Holder.counter + Int(pixel.data.b)) / (Holder.counter + 1)
+//        Holder.average = Pixel(UInt8(r), UInt8(g), UInt8(b), UInt8(a))
+//        Holder.counter += 1
+//        return CGFloat(diff)
+//    }
     
-    func scanline_replaceColor(_ colorPixel: Pixel, startingAtPoint startingPoint: (Int, Int), withColor replacementPixel: Pixel, tolerance: Int, antialias: Bool, sourceImageBuffer: ImageBuffer, radius: Int) {
+    func scanline_replaceColor(_ colorPixel: Pixel, startingAtPoint startingPoint: (Int, Int), withColor replacementPixel: Pixel, tolerance: Int, antialias: Bool/*, sourceImageBuffer: ImageBuffer*/, radius: Int) {
 
         func testPixelAtPoint(_ x: Int, _ y: Int) -> Bool {
             return differenceAtPoint(x, y, toPixel: colorPixel) <= tolerance
         }
         
-        let sourceIndex = sourceImageBuffer.indexFrom(startingPoint.0, startingPoint.1)
-        let sourceColorPixel = sourceImageBuffer[sourceIndex]
+//        let sourceIndex = sourceImageBuffer.indexFrom(startingPoint.0, startingPoint.1)
+//        let sourceColorPixel = sourceImageBuffer[sourceIndex]
         
         
         let startPoint = CGPoint(x: startingPoint.0, y: startingPoint.1)
@@ -110,31 +110,35 @@ class ImageBuffer {
                 counter += 1
                 seenIndices.add(indexFrom(x, y))
                 // source colorfull image => do I need this??
-                let indexSource = sourceImageBuffer.indexFrom(x, y)
-                let pixelSource = sourceImageBuffer[indexSource]
-                let diffSource = sourceColorPixel.diff(pixelSource)
-                var diffSourceVal:CGFloat = CGFloat(diffSource)/CGFloat(tolerance)
-                diffSourceVal = diffSourceVal < 0.5 ? 0.0 : diffSourceVal
+//                let indexSource = sourceImageBuffer.indexFrom(x, y)
+//                let pixelSource = sourceImageBuffer[indexSource]
+//                let diffSource = sourceColorPixel.diff(pixelSource)
+//                var diffSourceVal:CGFloat = CGFloat(diffSource)/CGFloat(tolerance*3)
+//                diffSourceVal = diffSourceVal < 0.5 ? 0.0 : diffSourceVal
 
                 // edge image
                 let index = indexFrom(x, y)
                 let pixel = self[index]
                 let diff = pixel.diff(colorPixel)
-                var diffVal:CGFloat = CGFloat(diff)/CGFloat(tolerance)
+                var diffVal:CGFloat = CGFloat(diff)/CGFloat(tolerance*3)
                 diffVal = diffVal < 0.5 ? 0.0 : diffVal
                 // distance
                 let dist = CGFloat(startPoint.distance(from: CGPoint(x: x, y: y)))
                 let distVal: CGFloat = easeInOutQuad(x: dist/CGFloat(radius))
-                let oldAlpha = CGFloat(pixel.data.a / 255)
+                let oldAlpha = CGFloat(pixel.data.a) / 255
+                if oldAlpha != 1 && oldAlpha != 0 {
+                    print(oldAlpha)
+                }
                 // previous color
-                let prevDiff = previousColorDiff(pixel: pixelSource)
+//                let prevDiff = previousColorDiff(pixel: pixelSource)
 //                print(prevDiff)
-                var alpha = max((diffVal*0.3 + diffSourceVal*0.2 + distVal*0.5) - oldAlpha, 0.0)
-                if dist < CGFloat(radius/2) {alpha = 0.0}
+                var alpha = max(oldAlpha * (diffVal*0.9 + /*diffSourceVal*0.9 +*/ distVal*0.1), 0.0)
+                if dist < CGFloat(radius/2) || alpha < 0.3 {alpha = 0.0}
                 else if alpha > 1.0 { return true }
                 if dist < CGFloat(radius/3)*2 && alpha < 0.6 {alpha = 0.0}
                 let alphaMultiplier = (tolerance == 0) ? 1 : min(1.0, alpha)
-                let newPixel = antialias ? pixel.multiplyAlpha(alphaMultiplier).blend(replacementPixel) : replacementPixel
+                let newPixel = Pixel(pixel.data.r, pixel.data.g, pixel.data.b, UInt8(alphaMultiplier * 255))
+//                let newPixel = antialias ? pixel.multiplyAlpha(alphaMultiplier).blend(replacementPixel) : replacementPixel
                 self[index] = newPixel
                 return false
             }

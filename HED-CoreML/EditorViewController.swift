@@ -12,8 +12,10 @@ class EditorViewController: UIViewController {
 
     @IBOutlet var imageView: UIImageView!
     var image: UIImage?
-    var edgeImage: UIImage?
+//    var edgeImage: UIImage?
     var marker: UIView?
+    var imageBuffer: ImageBuffer?
+//    var edgeImageBuffer: ImageBuffer?
     private var edittedMask: UIImage? {
         didSet {
             updateMask()
@@ -22,7 +24,15 @@ class EditorViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         imageView.image = image
-        edittedMask = edgeImage
+//        edittedMask = edgeImage
+        
+        if imageBuffer == nil {
+            imageBuffer = ImageBuffer(image: image!)
+        }
+//        if edgeImageBuffer == nil {
+//            edgeImageBuffer = ImageBuffer(image: edgeImage!)
+//        }
+        
         setupGuesters()
     }
 
@@ -54,11 +64,12 @@ class EditorViewController: UIViewController {
     
     func updateMarker(center: CGPoint) {
         if marker == nil {
-            marker = UIView(frame: CGRect(x: 0, y: 0, width: 60, height: 60))
+            let r:CGFloat = 375/500
+            marker = UIView(frame: CGRect(x: 0, y: 0, width: 56*r, height: 56*r))
             marker?.backgroundColor = UIColor.clear
             marker?.layer.borderColor = UIColor.red.cgColor
             marker?.layer.borderWidth = 3
-            marker?.layer.cornerRadius = 30
+            marker?.layer.cornerRadius = 28*r
             marker?.isUserInteractionEnabled = false
             view.addSubview(marker!)
             view.bringSubview(toFront: marker!)
@@ -68,8 +79,10 @@ class EditorViewController: UIViewController {
     }
     
     @IBAction func resetButtonPressed(_ sender: Any) {
-        edittedMask = edgeImage
-        edgeImageBuffer = ImageBuffer(image: edgeImage!)
+//        edittedMask = edgeImage
+//        edgeImageBuffer = ImageBuffer(image: edgeImage!)
+        edittedMask = image
+        imageBuffer = ImageBuffer(image: image!)
     }
     
     private func updateMask() {
@@ -77,24 +90,22 @@ class EditorViewController: UIViewController {
         maskImageView.image = edittedMask
         imageView.mask = maskImageView
     }
-    var imageBuffer: ImageBuffer?
-    var edgeImageBuffer: ImageBuffer?
     
     func pbk_imageByReplacingColorAt(_ x: Int, _ y: Int, withColor: UIColor, tolerance: Int, antialias: Bool = false) -> UIImage {
         if imageBuffer == nil {
             imageBuffer = ImageBuffer(image: image!)
         }
-        if edgeImageBuffer == nil {
-            edgeImageBuffer = ImageBuffer(image: edgeImage!)
-        }
+//        if edgeImageBuffer == nil {
+//            edgeImageBuffer = ImageBuffer(image: edgeImage!)
+//        }
         let point = (x, y)
-        let index = edgeImageBuffer!.indexFrom(x, y)
-        let pixel = edgeImageBuffer![index]
+        let index = imageBuffer!.indexFrom(x, y)
+        let pixel = imageBuffer![index]
         let replacementPixel = Pixel(color: withColor)
-        edgeImageBuffer!.scanline_replaceColor(pixel, startingAtPoint: point, withColor: replacementPixel, tolerance: tolerance, antialias: antialias, sourceImageBuffer: imageBuffer!, radius: 35)
+        imageBuffer!.scanline_replaceColor(pixel, startingAtPoint: point, withColor: replacementPixel, tolerance: tolerance, antialias: antialias, radius: 28)
         //        return image!
 
-        let imageR = edgeImageBuffer!.image// UIImage(cgImage: edgeImageBuffer!.image, scale: image!.scale, orientation: UIImageOrientation.up)
+        let imageR = imageBuffer!.image// UIImage(cgImage: edgeImageBuffer!.image, scale: image!.scale, orientation: UIImageOrientation.up)
         return imageR!
     }
 }

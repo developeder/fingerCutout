@@ -95,5 +95,4 @@ struct Pixel {
         return r*r + g*g + b*b// + a*a
     }
     
-    
 }
