@@ -25,25 +25,20 @@ import UIKit
                 "vec2 point = samplerCoord(image);" +
                 "vec4 pixelValue = unpremultiply(sample(image, point));" +
                 "vec4 unpremultColor = unpremultiply(color);" +
-                "float xDist = abs(x - (point.x*width));" +
-                "float yDist = abs(y - (point.y*height));" +
-                "float dist = sqrt((xDist * xDist) + (yDist * yDist));" +
+                "float dist = sqrt(pow(x - (point.x*width), 2.0) + pow(y - (point.y*height), 2.0));" +
                 "if (dist > radius) {" +
                 "   return premultiply(pixelValue);" +
                 "}" +
-                "if (dist < radius/2.0) {" +
-                "   return premultiply(vec4(pixelValue.rgb, 0.0));" +
-                "}" +
-                "float r = abs(unpremultColor.r - pixelValue.r) * 255.0;" +
-                "float rSquare = r*r;" +
-                "float g = abs(unpremultColor.g - pixelValue.g) * 255.0;" +
-                "float gSquare = g*g;" +
-                "float b = abs(unpremultColor.b - pixelValue.b) * 255.0;" +
-                "float bSquare = b*b;" +
-                "float diff = (rSquare + gSquare + bSquare);" +
-                "float outA = diff/tolerance * pixelValue.a;" + // tolerance
-                "outA = outA < 0.4 ? 0.0 : outA;" +
+                "float r = pow((unpremultColor.r - pixelValue.r) * 255.0, 2.0);" +
+                "float g = pow((unpremultColor.g - pixelValue.g) * 255.0, 2.0);" +
+                "float b = pow((unpremultColor.b - pixelValue.b) * 255.0, 2.0);" +
+                "float diff = (r + g + b);" +
+                "float x = dist/radius;" +
+                "float distVal = x < 0.5 ? 2.0 * x * x : x * (4.0 - 2.0 * x) - 1.0;" + //easeInOutQuad
+                "float outA = (diff/tolerance) * 0.9 + distVal * 0.1;" +
+                "outA = outA < 0.3 || dist < radius/2.0 || (dist < (radius/3.0)*2.0 && outA < 0.6) ? 0.0 : outA;" +
                 "outA = outA > 1.0 ? 1.0 : outA;" +
+                "outA = outA * pixelValue.a;" +
                 "vec4 outRgba = vec4(pixelValue.rgb, outA);" +
                 "return premultiply(outRgba);" +
             "}"
