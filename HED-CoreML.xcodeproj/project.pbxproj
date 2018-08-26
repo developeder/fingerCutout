@@ -25,6 +25,8 @@
 		F80FBBF7212457570096A1B9 /* Pixel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F80FBBF1212457560096A1B9 /* Pixel.swift */; };
 		F80FBBF8212457570096A1B9 /* test.png in Resources */ = {isa = PBXBuildFile; fileRef = F80FBBF2212457560096A1B9 /* test.png */; };
 		F80FBBF9212457570096A1B9 /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = F80FBBF4212457570096A1B9 /* Info.plist */; };
+		F8B0247E212D5DD6006D5D09 /* EdgeDetectionFilter.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8B0247D212D5DD6006D5D09 /* EdgeDetectionFilter.swift */; };
+		F8B02480212F05B1006D5D09 /* OpenGLImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F8B0247F212F05B1006D5D09 /* OpenGLImageView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -49,6 +51,8 @@
 		F80FBBF2212457560096A1B9 /* test.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = test.png; sourceTree = "<group>"; };
 		F80FBBF3212457560096A1B9 /* PaintBucket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PaintBucket.h; sourceTree = "<group>"; };
 		F80FBBF4212457570096A1B9 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		F8B0247D212D5DD6006D5D09 /* EdgeDetectionFilter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EdgeDetectionFilter.swift; sourceTree = "<group>"; };
+		F8B0247F212F05B1006D5D09 /* OpenGLImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpenGLImageView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -93,6 +97,8 @@
 				080F46911F09821200588C92 /* Assets.xcassets */,
 				080F46931F09821200588C92 /* LaunchScreen.storyboard */,
 				080F46961F09821200588C92 /* Info.plist */,
+				F8B0247D212D5DD6006D5D09 /* EdgeDetectionFilter.swift */,
+				F8B0247F212F05B1006D5D09 /* OpenGLImageView.swift */,
 			);
 			path = "HED-CoreML";
 			sourceTree = "<group>";
@@ -214,6 +220,7 @@
 				080F46B41F0A46E800588C92 /* UIImage+Resize.swift in Sources */,
 				F80FBBF5212457570096A1B9 /* ImageBuffer.swift in Sources */,
 				F80FBBE9212450EC0096A1B9 /* EditorViewController.swift in Sources */,
+				F8B02480212F05B1006D5D09 /* OpenGLImageView.swift in Sources */,
 				080F46AF1F0A45D200588C92 /* HED_so3.mlmodel in Sources */,
 				F80FBBF7212457570096A1B9 /* Pixel.swift in Sources */,
 				080F46B21F0A464C00588C92 /* UIImage+CVPixelBuffer.swift in Sources */,
@@ -222,6 +229,7 @@
 				080F46AC1F0A451E00588C92 /* HED_fuse.mlmodel in Sources */,
 				F80FBBE721203D170096A1B9 /* ViewController.swift in Sources */,
 				080F468B1F09821200588C92 /* AppDelegate.swift in Sources */,
+				F8B0247E212D5DD6006D5D09 /* EdgeDetectionFilter.swift in Sources */,
 				F80FBBF6212457570096A1B9 /* UIImage+PaintBucket.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

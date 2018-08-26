@@ -117,12 +117,6 @@
                         <rect key="frame" x="0.0" y="0.0" width="414" height="736"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="x0e-TK-q57">
-                                <rect key="frame" x="0.0" y="161" width="414" height="414"/>
-                                <constraints>
-                                    <constraint firstAttribute="width" secondItem="x0e-TK-q57" secondAttribute="height" id="97D-Mj-N2a"/>
-                                </constraints>
-                            </imageView>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="OtD-dB-RAl">
                                 <rect key="frame" x="181.66666666666666" y="685" width="52" height="33"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
@@ -133,6 +127,12 @@
                                     <action selector="resetButtonPressed:" destination="bpj-1E-CaG" eventType="touchUpInside" id="xJY-3H-7z5"/>
                                 </connections>
                             </button>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="x0e-TK-q57">
+                                <rect key="frame" x="0.0" y="161" width="414" height="414"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="414" id="QXX-JG-LPP"/>
+                                </constraints>
+                            </imageView>
                         </subviews>
                         <color key="backgroundColor" red="1" green="0.57637232540000005" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
@@ -146,6 +146,7 @@
                     </view>
                     <connections>
                         <outlet property="imageView" destination="x0e-TK-q57" id="pf0-fg-RKc"/>
+                        <outlet property="imageViewHeightConstraint" destination="QXX-JG-LPP" id="sXt-XX-nUx"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="ACN-KG-SoL" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -171,7 +172,7 @@
         <!--View Controller-->
         <scene sceneID="lpa-OM-iHf">
             <objects>
-                <viewController id="ygf-94-wHK" customClass="ViewController" customModule="CropTest" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="ygf-94-wHK" customClass="ViewController" customModule="HED_CoreML" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="WeT-W8-dHO">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="736"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
