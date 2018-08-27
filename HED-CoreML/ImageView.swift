@@ -27,7 +27,6 @@ class MetalImageView: MTKView
     lazy var ciContext: CIContext =
         {
             [unowned self] in
-            
             return CIContext(mtlDevice: self.device!)
             }()
     
@@ -35,7 +34,8 @@ class MetalImageView: MTKView
     {
         super.init(frame: frameRect,
                    device: device ?? MTLCreateSystemDefaultDevice())
-        
+        presentsWithTransaction = false
+        enableSetNeedsDisplay = true
         if super.device == nil
         {
             fatalError("Device doesn't support Metal")
@@ -51,11 +51,16 @@ class MetalImageView: MTKView
     
     /// The image to display
     var image: CIImage?
-    {
-        didSet
-        {
-            renderImage()
-        }
+//    {
+//        didSet
+//        {
+//            renderImage()
+//        }
+//    }
+
+    override func draw(_ rect: CGRect) {
+        ciContext.clearCaches()
+        renderImage()
     }
     
     func renderImage()
@@ -91,6 +96,7 @@ class MetalImageView: MTKView
         commandBuffer?.present(currentDrawable!)
         
         commandBuffer?.commit()
+//        setNeedsLayout()
     }
 }
 

@@ -19,6 +19,7 @@ import UIKit
     var color3: CIColor?
     var color4: CIColor?
     var color5: CIColor?
+    var magicMask: CIImage?
     override init()
     {
         super.init()
@@ -96,6 +97,7 @@ import UIKit
     override var outputImage: CIImage!
     {
         guard let image = inputImage,
+            let mask = magicMask,
             let kernel = self.edgeDetectionKernel,
             let color = color else
         {
@@ -104,12 +106,13 @@ import UIKit
         
         let extent = image.extent
         let arguments = [image,
+                         mask,
                          color,
                          color1 ?? color,
                          color2 ?? color,
                          color3 ?? color,
-                         color4 ?? color,
-                         color5 ?? color,
+//                         color4 ?? color,
+//                         color5 ?? color,
                          4500.0,
                          center.x,
                          center.y,
@@ -142,4 +145,17 @@ extension UIImage {
             return UIColor.white
         }
     }
+    
+//    func getAlpha(pos: CGPoint) -> CGFloat {
+//        
+//        if let pixelData = self.cgImage?.dataProvider?.data {
+//            let data: UnsafePointer<UInt8> = CFDataGetBytePtr(pixelData)
+//            
+//            let pixelInfo: Int = ((Int(self.size.width) * Int(pos.y)) + Int(pos.x)) * 4
+//            let a = CGFloat(data[pixelInfo+3]) / CGFloat(255.0)
+//            return a
+//        } else {
+//            return 0.0
+//        }
+//    }
 }

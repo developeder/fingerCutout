@@ -16,6 +16,7 @@ class EditorViewController: UIViewController {
     var marker: UIView?
     var glkImage: MetalImageView?
     var eaglContext: EAGLContext?
+    var magicImage: CIImage?
     var didAppear = false
     var colors = [UIColor]()
     private var edittedMask: CIImage? {
@@ -91,7 +92,8 @@ class EditorViewController: UIViewController {
         let filter = EdgeDetectionFilter()
         filter.inputImage = editted
         filter.center = rciPoint
-        filter.radius = 40 * (editted.extent.height/glkImage!.frame.height)
+        filter.radius = 50 * (editted.extent.height/glkImage!.frame.height)
+        filter.magicMask = magicImage
         colors.append(image!.getPixelColor(pos: rPoint))
         filter.color = CIColor(cgColor: colors[colors.count-1].cgColor)
         if colors.count > 1 {
@@ -116,6 +118,7 @@ class EditorViewController: UIViewController {
         
         let imageOut = filter.outputImage
         glkImage?.image = imageOut
+        glkImage?.setNeedsDisplay()
 //        imageView.image = convert(ciImage: imageOut!)
         edittedMask = imageOut
         return;

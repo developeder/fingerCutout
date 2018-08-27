@@ -20,6 +20,7 @@
 		080F46B71F0A4AFA00588C92 /* pic1.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 080F46B61F0A4AF400588C92 /* pic1.jpg */; };
 		F80FBB552133E46800C9420F /* edgeDetectionFilter.metal in Sources */ = {isa = PBXBuildFile; fileRef = F80FBB542133E46800C9420F /* edgeDetectionFilter.metal */; };
 		F80FBB5B2133F7CA00C9420F /* ImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F80FBB5A2133F7CA00C9420F /* ImageView.swift */; };
+		F80FBB5D213426D500C9420F /* fitted_mask.png in Resources */ = {isa = PBXBuildFile; fileRef = F80FBB5C213426D400C9420F /* fitted_mask.png */; };
 		F80FBBE721203D170096A1B9 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F80FBBE621203D170096A1B9 /* ViewController.swift */; };
 		F80FBBE9212450EC0096A1B9 /* EditorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F80FBBE8212450EC0096A1B9 /* EditorViewController.swift */; };
 		F80FBBF5212457570096A1B9 /* ImageBuffer.swift in Sources */ = {isa = PBXBuildFile; fileRef = F80FBBEF212457560096A1B9 /* ImageBuffer.swift */; };
@@ -47,6 +48,7 @@
 		080F46B61F0A4AF400588C92 /* pic1.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = pic1.jpg; sourceTree = "<group>"; };
 		F80FBB542133E46800C9420F /* edgeDetectionFilter.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = edgeDetectionFilter.metal; sourceTree = "<group>"; };
 		F80FBB5A2133F7CA00C9420F /* ImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageView.swift; sourceTree = "<group>"; };
+		F80FBB5C213426D400C9420F /* fitted_mask.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = fitted_mask.png; sourceTree = "<group>"; };
 		F80FBBE621203D170096A1B9 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		F80FBBE8212450EC0096A1B9 /* EditorViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditorViewController.swift; sourceTree = "<group>"; };
 		F80FBBEF212457560096A1B9 /* ImageBuffer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageBuffer.swift; sourceTree = "<group>"; };
@@ -131,6 +133,7 @@
 		080F46B51F0A4AF400588C92 /* Images */ = {
 			isa = PBXGroup;
 			children = (
+				F80FBB5C213426D400C9420F /* fitted_mask.png */,
 				080F46B61F0A4AF400588C92 /* pic1.jpg */,
 			);
 			path = Images;
@@ -209,6 +212,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				080F46B71F0A4AFA00588C92 /* pic1.jpg in Resources */,
+				F80FBB5D213426D500C9420F /* fitted_mask.png in Resources */,
 				080F46951F09821200588C92 /* LaunchScreen.storyboard in Resources */,
 				080F46921F09821200588C92 /* Assets.xcassets in Resources */,
 				080F46901F09821200588C92 /* Main.storyboard in Resources */,
