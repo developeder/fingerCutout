@@ -18,6 +18,8 @@
 		080F46B21F0A464C00588C92 /* UIImage+CVPixelBuffer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 080F46B11F0A464800588C92 /* UIImage+CVPixelBuffer.swift */; };
 		080F46B41F0A46E800588C92 /* UIImage+Resize.swift in Sources */ = {isa = PBXBuildFile; fileRef = 080F46B31F0A46E800588C92 /* UIImage+Resize.swift */; };
 		080F46B71F0A4AFA00588C92 /* pic1.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 080F46B61F0A4AF400588C92 /* pic1.jpg */; };
+		F80FBB552133E46800C9420F /* edgeDetectionFilter.metal in Sources */ = {isa = PBXBuildFile; fileRef = F80FBB542133E46800C9420F /* edgeDetectionFilter.metal */; };
+		F80FBB5B2133F7CA00C9420F /* ImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F80FBB5A2133F7CA00C9420F /* ImageView.swift */; };
 		F80FBBE721203D170096A1B9 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F80FBBE621203D170096A1B9 /* ViewController.swift */; };
 		F80FBBE9212450EC0096A1B9 /* EditorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F80FBBE8212450EC0096A1B9 /* EditorViewController.swift */; };
 		F80FBBF5212457570096A1B9 /* ImageBuffer.swift in Sources */ = {isa = PBXBuildFile; fileRef = F80FBBEF212457560096A1B9 /* ImageBuffer.swift */; };
@@ -43,6 +45,8 @@
 		080F46B11F0A464800588C92 /* UIImage+CVPixelBuffer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImage+CVPixelBuffer.swift"; sourceTree = "<group>"; };
 		080F46B31F0A46E800588C92 /* UIImage+Resize.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImage+Resize.swift"; sourceTree = "<group>"; };
 		080F46B61F0A4AF400588C92 /* pic1.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = pic1.jpg; sourceTree = "<group>"; };
+		F80FBB542133E46800C9420F /* edgeDetectionFilter.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = edgeDetectionFilter.metal; sourceTree = "<group>"; };
+		F80FBB5A2133F7CA00C9420F /* ImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageView.swift; sourceTree = "<group>"; };
 		F80FBBE621203D170096A1B9 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		F80FBBE8212450EC0096A1B9 /* EditorViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditorViewController.swift; sourceTree = "<group>"; };
 		F80FBBEF212457560096A1B9 /* ImageBuffer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageBuffer.swift; sourceTree = "<group>"; };
@@ -99,6 +103,8 @@
 				080F46961F09821200588C92 /* Info.plist */,
 				F8B0247D212D5DD6006D5D09 /* EdgeDetectionFilter.swift */,
 				F8B0247F212F05B1006D5D09 /* OpenGLImageView.swift */,
+				F80FBB542133E46800C9420F /* edgeDetectionFilter.metal */,
+				F80FBB5A2133F7CA00C9420F /* ImageView.swift */,
 			);
 			path = "HED-CoreML";
 			sourceTree = "<group>";
@@ -175,6 +181,7 @@
 				TargetAttributes = {
 					080F46861F09821200588C92 = {
 						CreatedOnToolsVersion = 9.0;
+						LastSwiftMigration = 0940;
 					};
 				};
 			};
@@ -219,7 +226,9 @@
 			files = (
 				080F46B41F0A46E800588C92 /* UIImage+Resize.swift in Sources */,
 				F80FBBF5212457570096A1B9 /* ImageBuffer.swift in Sources */,
+				F80FBB5B2133F7CA00C9420F /* ImageView.swift in Sources */,
 				F80FBBE9212450EC0096A1B9 /* EditorViewController.swift in Sources */,
+				F80FBB552133E46800C9420F /* edgeDetectionFilter.metal in Sources */,
 				F8B02480212F05B1006D5D09 /* OpenGLImageView.swift in Sources */,
 				080F46AF1F0A45D200588C92 /* HED_so3.mlmodel in Sources */,
 				F80FBBF7212457570096A1B9 /* Pixel.swift in Sources */,
@@ -371,12 +380,17 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
 				COREML_CODEGEN_LANGUAGE = Swift;
 				DEVELOPMENT_TEAM = DPZ963XT95;
 				INFOPLIST_FILE = "HED-CoreML/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				MTLLINKER_FLAGS = "-cikernel";
+				MTL_COMPILER_FLAGS = "-fcikernel";
 				PRODUCT_BUNDLE_IDENTIFIER = "me.s1ddok.HED-CoreML";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 4.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -386,12 +400,16 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
 				COREML_CODEGEN_LANGUAGE = Swift;
 				DEVELOPMENT_TEAM = DPZ963XT95;
 				INFOPLIST_FILE = "HED-CoreML/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				MTLLINKER_FLAGS = "-cikernel";
+				MTL_COMPILER_FLAGS = "-fcikernel";
 				PRODUCT_BUNDLE_IDENTIFIER = "me.s1ddok.HED-CoreML";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "";
 				SWIFT_VERSION = 4.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};

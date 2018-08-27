@@ -14,9 +14,10 @@ class EditorViewController: UIViewController {
     @IBOutlet var imageViewHeightConstraint: NSLayoutConstraint!
     var image: UIImage?
     var marker: UIView?
-    var glkImage: OpenGLImageView?
+    var glkImage: MetalImageView?
     var eaglContext: EAGLContext?
     var didAppear = false
+    var colors = [UIColor]()
     private var edittedMask: CIImage? {
         didSet {
         }
@@ -24,6 +25,8 @@ class EditorViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+    
+        
         edittedMask = CIImage(image: image!)
         
         let ar = image!.size.height/image!.size.width
@@ -34,7 +37,7 @@ class EditorViewController: UIViewController {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         if !didAppear {
-            glkImage = OpenGLImageView(frame: imageView.frame, context: eaglContext!)
+            glkImage = MetalImageView(frame: imageView.frame, device: nil)//OpenGLImageView(frame: imageView.frame)
             
             glkImage!.clipsToBounds = false
             glkImage!.layer.masksToBounds = false
@@ -56,29 +59,64 @@ class EditorViewController: UIViewController {
     func setupGuesters() {
         let gesture = UITapGestureRecognizer(target: self, action: #selector(didTap(sender:)))
         imageView.addGestureRecognizer(gesture)
-        let pan = UIPanGestureRecognizer(target: self, action: #selector(didTap(sender:)))
+        let pan = UIPanGestureRecognizer(target: self, action: #selector(didPan(sender:)))
         imageView.addGestureRecognizer(pan)
         imageView.isUserInteractionEnabled = true
     }
     
-    @objc func didTap(sender: UIGestureRecognizer) {
+    @objc func didPan(sender: UIGestureRecognizer) {
         let point = sender.location(in: imageView)
+        erase(at: point)
+        if sender.state == .ended || sender.state == .cancelled {
+            colors = [UIColor]()
+        }
+    }
+    
+    @objc func didTap(sender: UIGestureRecognizer) {
+        colors = [UIColor]()
+        let point = sender.location(in: imageView)
+        erase(at: point)
+    }
+    
+    func erase(at point: CGPoint) {
         let ciPoint = CGPoint(x: point.x, y: imageView.frame.height - point.y)
         if point.x < 0.0 || point.x > imageView.frame.width || point.y < 0.0 || point.y > imageView.frame.height {return}
         let ar = image!.size.width/imageView.bounds.size.width
         let rPoint = CGPoint(x: point.x * ar, y: point.y * ar)
         let rciPoint = CGPoint(x: ciPoint.x * ar, y: ciPoint.y * ar)
         guard let editted = edittedMask else {return}
+        
+//        let roiImage = editted.cropped(to: <#T##CGRect#>)
 
         let filter = EdgeDetectionFilter()
         filter.inputImage = editted
         filter.center = rciPoint
         filter.radius = 40 * (editted.extent.height/glkImage!.frame.height)
-        filter.color = CIColor(cgColor: image!.getPixelColor(pos: rPoint).cgColor)
+        colors.append(image!.getPixelColor(pos: rPoint))
+        filter.color = CIColor(cgColor: colors[colors.count-1].cgColor)
+        if colors.count > 1 {
+            filter.color1 = CIColor(cgColor: colors[colors.count-2].cgColor)
+        }
+        if colors.count > 2 {
+            filter.color2 = CIColor(cgColor: colors[colors.count-3].cgColor)
+        }
+        if colors.count > 3 {
+            filter.color3 = CIColor(cgColor: colors[colors.count-4].cgColor)
+        }
+        if colors.count > 4 {
+            filter.color4 = CIColor(cgColor: colors[colors.count-5].cgColor)
+        }
+        if colors.count > 5 {
+            filter.color5 = CIColor(cgColor: colors[colors.count-6].cgColor)
+        }
+        
+//        while colors.count > 5 {
+//            colors.remove(at: 0)
+//        }
         
         let imageOut = filter.outputImage
         glkImage?.image = imageOut
-        imageView.image = nil
+//        imageView.image = convert(ciImage: imageOut!)
         edittedMask = imageOut
         return;
     }
