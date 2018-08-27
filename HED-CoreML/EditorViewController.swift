@@ -70,6 +70,8 @@ class EditorViewController: UIViewController {
         erase(at: point)
         if sender.state == .ended || sender.state == .cancelled {
             colors = [UIColor]()
+            let imageTemp = convert(ciImage: edittedMask!)
+            self.edittedMask = CIImage(cgImage: imageTemp!.cgImage!)
         }
     }
     
@@ -90,7 +92,7 @@ class EditorViewController: UIViewController {
 //        let roiImage = editted.cropped(to: <#T##CGRect#>)
 
         let filter = EdgeDetectionFilter()
-        filter.inputImage = editted
+        filter.inputImage = edittedMask
         filter.center = rciPoint
         filter.radius = 50 * (editted.extent.height/glkImage!.frame.height)
         filter.magicMask = magicImage
