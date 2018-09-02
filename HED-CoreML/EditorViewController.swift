@@ -14,7 +14,11 @@ class EditorViewController: UIViewController {
     @IBOutlet var imageView: UIImageView!
     @IBOutlet var slider: UISlider!
     @IBOutlet var sliderVal: UILabel!
+    @IBOutlet var sizeSliderVal: UILabel!
     @IBOutlet var imageViewHeightConstraint: NSLayoutConstraint!
+    @IBOutlet var sizeSider: UISlider!
+    @IBOutlet var resetButton: UIButton!
+    
     var buffer: MTLBuffer?
     var image: UIImage?
     var marker: UIView?
@@ -61,7 +65,6 @@ class EditorViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
         //        guard let device = MTLCreateSystemDefaultDevice(),
         guard let image = self.image,
             let cgImage = image.cgImage else {
@@ -76,6 +79,13 @@ class EditorViewController: UIViewController {
         imageViewHeightConstraint.constant = UIApplication.shared.keyWindow!.frame.width * ar
         eaglContext = EAGLContext(api: .openGLES3)
         self.sliderVal.text = "\(slider.value)"
+        
+        let navItem = UIBarButtonItem(customView: resetButton)
+        self.navigationItem.rightBarButtonItem = navItem
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
     }
  
     override func viewDidAppear(_ animated: Bool) {
@@ -153,7 +163,7 @@ class EditorViewController: UIViewController {
         let filter = EdgeDetectionFilter()
         filter.inputImage = editted//CIImage(cgImage: image!.cgImage!)
         filter.center = rciPoint
-        let radius = 25 * (editted.extent.height/glkImage!.frame.height)
+        let radius = CGFloat(sizeSider.value) * (editted.extent.height/glkImage!.frame.height)
         filter.radius = radius
         filter.magicMask = magicImage
         filter.tolerance = slider.value
@@ -203,7 +213,11 @@ class EditorViewController: UIViewController {
     }
     
     @IBAction func didSlide(_ slider: UISlider) {
-        self.sliderVal.text = "\(slider.value)"
+        if slider == self.slider {
+            self.sliderVal.text = "\(slider.value)"
+        } else if slider == self.sizeSider {
+            self.sizeSliderVal.text = "\(slider.value)"
+        }
     }
     
     func updateMarker(center: CGPoint) {
