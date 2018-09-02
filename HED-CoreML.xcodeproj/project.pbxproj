@@ -21,6 +21,7 @@
 		F80FBB552133E46800C9420F /* edgeDetectionFilter.metal in Sources */ = {isa = PBXBuildFile; fileRef = F80FBB542133E46800C9420F /* edgeDetectionFilter.metal */; };
 		F80FBB5B2133F7CA00C9420F /* ImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F80FBB5A2133F7CA00C9420F /* ImageView.swift */; };
 		F80FBB5D213426D500C9420F /* fitted_mask.png in Resources */ = {isa = PBXBuildFile; fileRef = F80FBB5C213426D400C9420F /* fitted_mask.png */; };
+		F80FBB5F213817E900C9420F /* ImageProcessKernel.swift in Sources */ = {isa = PBXBuildFile; fileRef = F80FBB5E213817E900C9420F /* ImageProcessKernel.swift */; };
 		F80FBBE721203D170096A1B9 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F80FBBE621203D170096A1B9 /* ViewController.swift */; };
 		F80FBBE9212450EC0096A1B9 /* EditorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = F80FBBE8212450EC0096A1B9 /* EditorViewController.swift */; };
 		F80FBBF5212457570096A1B9 /* ImageBuffer.swift in Sources */ = {isa = PBXBuildFile; fileRef = F80FBBEF212457560096A1B9 /* ImageBuffer.swift */; };
@@ -49,6 +50,7 @@
 		F80FBB542133E46800C9420F /* edgeDetectionFilter.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = edgeDetectionFilter.metal; sourceTree = "<group>"; };
 		F80FBB5A2133F7CA00C9420F /* ImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageView.swift; sourceTree = "<group>"; };
 		F80FBB5C213426D400C9420F /* fitted_mask.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = fitted_mask.png; sourceTree = "<group>"; };
+		F80FBB5E213817E900C9420F /* ImageProcessKernel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageProcessKernel.swift; sourceTree = "<group>"; };
 		F80FBBE621203D170096A1B9 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		F80FBBE8212450EC0096A1B9 /* EditorViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditorViewController.swift; sourceTree = "<group>"; };
 		F80FBBEF212457560096A1B9 /* ImageBuffer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageBuffer.swift; sourceTree = "<group>"; };
@@ -107,6 +109,7 @@
 				F8B0247F212F05B1006D5D09 /* OpenGLImageView.swift */,
 				F80FBB542133E46800C9420F /* edgeDetectionFilter.metal */,
 				F80FBB5A2133F7CA00C9420F /* ImageView.swift */,
+				F80FBB5E213817E900C9420F /* ImageProcessKernel.swift */,
 			);
 			path = "HED-CoreML";
 			sourceTree = "<group>";
@@ -233,6 +236,7 @@
 				F80FBB5B2133F7CA00C9420F /* ImageView.swift in Sources */,
 				F80FBBE9212450EC0096A1B9 /* EditorViewController.swift in Sources */,
 				F80FBB552133E46800C9420F /* edgeDetectionFilter.metal in Sources */,
+				F80FBB5F213817E900C9420F /* ImageProcessKernel.swift in Sources */,
 				F8B02480212F05B1006D5D09 /* OpenGLImageView.swift in Sources */,
 				080F46AF1F0A45D200588C92 /* HED_so3.mlmodel in Sources */,
 				F80FBBF7212457570096A1B9 /* Pixel.swift in Sources */,

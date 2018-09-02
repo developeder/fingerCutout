@@ -16,6 +16,7 @@ import QuartzCore
 class MetalImageView: MTKView
 {
     let colorSpace = CGColorSpaceCreateDeviceRGB()
+    var copyTexture: MTLTexture?
     
     lazy var commandQueue: MTLCommandQueue =
         {
@@ -93,8 +94,19 @@ class MetalImageView: MTKView
                          bounds: bounds,
                          colorSpace: colorSpace)
         
-        commandBuffer?.present(currentDrawable!)
+//        if copyTexture == nil {
+//            let descriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: targetTexture.pixelFormat, width: Int(image.extent.size.width), height: Int(image.extent.size.height), mipmapped: true)
+//            descriptor.usage = targetTexture.usage
+//            copyTexture = device?.makeTexture(descriptor: descriptor)
+//        }
+//        
+//        ciContext.render(image,
+//                         to: copyTexture!,
+//                         commandBuffer: commandBuffer,
+//                         bounds: image.extent,
+//                         colorSpace: colorSpace)
         
+        commandBuffer?.present(currentDrawable!)
         commandBuffer?.commit()
 //        setNeedsLayout()
     }

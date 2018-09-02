@@ -133,11 +133,28 @@
                                     <constraint firstAttribute="height" constant="414" id="QXX-JG-LPP"/>
                                 </constraints>
                             </imageView>
+                            <slider opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" value="4000" minValue="0.0" maxValue="10000" translatesAutoresizingMaskIntoConstraints="NO" id="wLZ-zr-j9c">
+                                <rect key="frame" x="-2" y="64" width="418" height="31"/>
+                                <connections>
+                                    <action selector="didSlide:" destination="bpj-1E-CaG" eventType="valueChanged" id="s7s-9g-Y8y"/>
+                                </connections>
+                            </slider>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ELu-vs-IrY">
+                                <rect key="frame" x="186" y="102" width="42" height="21"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                         </subviews>
                         <color key="backgroundColor" red="1" green="0.57637232540000005" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
+                            <constraint firstAttribute="trailing" secondItem="wLZ-zr-j9c" secondAttribute="trailing" id="4E1-1G-sc1"/>
                             <constraint firstItem="yBg-cf-jdD" firstAttribute="top" secondItem="OtD-dB-RAl" secondAttribute="bottom" constant="18" id="7rc-pC-NFV"/>
                             <constraint firstItem="OtD-dB-RAl" firstAttribute="centerX" secondItem="deF-96-vqx" secondAttribute="centerX" id="B3f-mz-0a8"/>
+                            <constraint firstItem="wLZ-zr-j9c" firstAttribute="top" secondItem="dyX-Up-p42" secondAttribute="bottom" id="S92-AC-aHb"/>
+                            <constraint firstItem="ELu-vs-IrY" firstAttribute="centerX" secondItem="deF-96-vqx" secondAttribute="centerX" id="VCQ-Hy-BZo"/>
+                            <constraint firstItem="wLZ-zr-j9c" firstAttribute="leading" secondItem="deF-96-vqx" secondAttribute="leading" id="W9Y-dJ-Nuq"/>
+                            <constraint firstItem="ELu-vs-IrY" firstAttribute="top" secondItem="wLZ-zr-j9c" secondAttribute="bottom" constant="8" id="WhD-bd-t10"/>
                             <constraint firstItem="x0e-TK-q57" firstAttribute="leading" secondItem="deF-96-vqx" secondAttribute="leading" id="Zk0-Ru-B14"/>
                             <constraint firstItem="x0e-TK-q57" firstAttribute="centerY" secondItem="deF-96-vqx" secondAttribute="centerY" id="cA8-dt-NBj"/>
                             <constraint firstAttribute="trailing" secondItem="x0e-TK-q57" secondAttribute="trailing" id="hD2-tA-1Iy"/>
@@ -147,11 +164,13 @@
                     <connections>
                         <outlet property="imageView" destination="x0e-TK-q57" id="pf0-fg-RKc"/>
                         <outlet property="imageViewHeightConstraint" destination="QXX-JG-LPP" id="sXt-XX-nUx"/>
+                        <outlet property="slider" destination="wLZ-zr-j9c" id="Ttc-09-x5u"/>
+                        <outlet property="sliderVal" destination="ELu-vs-IrY" id="TTQ-RL-fy8"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="ACN-KG-SoL" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="817" y="218"/>
+            <point key="canvasLocation" x="815.94202898550736" y="217.66304347826087"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="chT-Q0-lg5">

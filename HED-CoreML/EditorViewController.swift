@@ -7,11 +7,15 @@
 //
 
 import UIKit
+import Metal
 
 class EditorViewController: UIViewController {
 
     @IBOutlet var imageView: UIImageView!
+    @IBOutlet var slider: UISlider!
+    @IBOutlet var sliderVal: UILabel!
     @IBOutlet var imageViewHeightConstraint: NSLayoutConstraint!
+    var buffer: MTLBuffer?
     var image: UIImage?
     var marker: UIView?
     var glkImage: MetalImageView?
@@ -19,32 +23,69 @@ class EditorViewController: UIViewController {
     var magicImage: CIImage?
     var didAppear = false
     var colors = [UIColor]()
+    var reversY = true
     private var edittedMask: CIImage? {
         didSet {
         }
     }
     
+    func getImageUnsafePointer(image: UIImage) -> UnsafeRawPointer? {
+        let data = UIImagePNGRepresentation(image) as NSData?
+        let ptr: UnsafeRawPointer? = data?.bytes
+        return ptr
+    }
+    
+//    private func getAlphaChannel(image: CGImage) -> UnsafeRawPointer? {
+//        let width = image.width
+//        let height = image.height
+//        var imageData = UInt8()
+//        let strideLength = width + (width % 4)
+//
+//        let colorSpace = CGColorSpaceCreateDeviceGray()
+//        let ctx1 = CGContext(data: imageData, width: width, height: height, bitsPerComponent: 8, bytesPerRow: width, space: colorSpace, bitmapInfo: CGBitmapInfo(rawValue: CGImageAlphaInfo.none.rawValue).rawValue | 0)
+//
+//        var ctx = CGContext(data: nil, width: width, height: height, bitsPerComponent: 8, bytesPerRow: strideLength, space: CGColorSpaceCreateDeviceGray(), bitmapInfo: CGImageAlphaInfo.alphaOnly.rawValue)
+//
+//
+//        ctx.draw(in: image,  CGRect(x: 0, y: 0, width: CGFloat(width), height: CGFloat(height)))
+//
+//        let alphaData = UInt8() as? [UInt8]
+//
+//
+//        func calloc(height: width?) {
+//
+//            calloc(1, *width*heightsizeof(unsignedchar)
+//        }
+//        return nil
+//    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-    
         
-        edittedMask = CIImage(image: image!)
+        //        guard let device = MTLCreateSystemDefaultDevice(),
+        guard let image = self.image,
+            let cgImage = image.cgImage else {
+                return
+        }
+//        let length = image.size.width * image.size.height
         
-        let ar = image!.size.height/image!.size.width
+//        buffer = device.makeBuffer(bytes: getImageUnsafePointer(image: image)!, length: Int(length), options: MTLResourceOptions.storageModeShared)
+        edittedMask = CIImage(cgImage: cgImage)
+
+        let ar = image.size.height/image.size.width
         imageViewHeightConstraint.constant = UIApplication.shared.keyWindow!.frame.width * ar
         eaglContext = EAGLContext(api: .openGLES3)
+        self.sliderVal.text = "\(slider.value)"
     }
  
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         if !didAppear {
             glkImage = MetalImageView(frame: imageView.frame, device: nil)//OpenGLImageView(frame: imageView.frame)
-            
             glkImage!.clipsToBounds = false
             glkImage!.layer.masksToBounds = false
             glkImage!.contentMode = .center
             glkImage!.image = edittedMask
-            //        glkImage?.backgroundColor = UIColor.yellow
             self.view.addSubview(glkImage!)
             self.view.sendSubview(toBack: glkImage!)
             setupGuesters()
@@ -67,35 +108,56 @@ class EditorViewController: UIViewController {
     
     @objc func didPan(sender: UIGestureRecognizer) {
         let point = sender.location(in: imageView)
-        erase(at: point)
+        let velocityPoint = (sender as! UIPanGestureRecognizer).velocity(in: imageView)
+        let velocity = sqrt(pow(velocityPoint.x, 2.0) + pow(velocityPoint.y, 2.0)) / sqrt(pow(imageView.frame.width, 2.0) + pow(imageView.frame.height, 2.0))
+        erase(at: point, velocity: velocity)
         if sender.state == .ended || sender.state == .cancelled {
             colors = [UIColor]()
             let imageTemp = convert(ciImage: edittedMask!)
             self.edittedMask = CIImage(cgImage: imageTemp!.cgImage!)
+            reversY = true
         }
     }
     
     @objc func didTap(sender: UIGestureRecognizer) {
         colors = [UIColor]()
         let point = sender.location(in: imageView)
-        erase(at: point)
+        erase(at: point, velocity: 0.0)
+        let imageTemp = convert(ciImage: edittedMask!)
+        self.edittedMask = CIImage(cgImage: imageTemp!.cgImage!)
+        reversY = true
     }
     
-    func erase(at point: CGPoint) {
-        let ciPoint = CGPoint(x: point.x, y: imageView.frame.height - point.y)
+    func getLastEdited() -> CIImage? {
+        
+//        if let texture = self.glkImage?.copyTexture,
+//            let image = CIImage(mtlTexture: texture, options: nil) {
+//            return image
+//        }
+        return edittedMask
+    }
+    
+    func erase(at point: CGPoint, velocity: CGFloat) {
+        let date = Date()
+        reversY = true
+        let y = reversY ? point.y : imageView.frame.height - point.y
+        reversY = false
+        let ciPoint = CGPoint(x: point.x, y: y)
         if point.x < 0.0 || point.x > imageView.frame.width || point.y < 0.0 || point.y > imageView.frame.height {return}
         let ar = image!.size.width/imageView.bounds.size.width
         let rPoint = CGPoint(x: point.x * ar, y: point.y * ar)
         let rciPoint = CGPoint(x: ciPoint.x * ar, y: ciPoint.y * ar)
+        
         guard let editted = edittedMask else {return}
         
-//        let roiImage = editted.cropped(to: <#T##CGRect#>)
-
         let filter = EdgeDetectionFilter()
-        filter.inputImage = edittedMask
+        filter.inputImage = editted//CIImage(cgImage: image!.cgImage!)
         filter.center = rciPoint
-        filter.radius = 50 * (editted.extent.height/glkImage!.frame.height)
+        let radius = 25 * (editted.extent.height/glkImage!.frame.height)
+        filter.radius = radius
         filter.magicMask = magicImage
+        filter.tolerance = slider.value
+        filter.velocity = velocity*0.5
         colors.append(image!.getPixelColor(pos: rPoint))
         filter.color = CIColor(cgColor: colors[colors.count-1].cgColor)
         if colors.count > 1 {
@@ -107,24 +169,27 @@ class EditorViewController: UIViewController {
         if colors.count > 3 {
             filter.color3 = CIColor(cgColor: colors[colors.count-4].cgColor)
         }
-        if colors.count > 4 {
-            filter.color4 = CIColor(cgColor: colors[colors.count-5].cgColor)
-        }
-        if colors.count > 5 {
-            filter.color5 = CIColor(cgColor: colors[colors.count-6].cgColor)
+        
+        while colors.count > 4 {
+            colors.remove(at: 0)
         }
         
-//        while colors.count > 5 {
-//            colors.remove(at: 0)
-//        }
+        let imageOut = filter.outputImage//.cropped(to: CGRect(x: point.x - radius, y: imageView.frame.height - point.y - radius, width: 2 * radius, height: 2 * radius))
         
-        let imageOut = filter.outputImage
         glkImage?.image = imageOut
         glkImage?.setNeedsDisplay()
-//        imageView.image = convert(ciImage: imageOut!)
         edittedMask = imageOut
-        return;
+        let date1 = Date()
+        guard let buffer = glkImage?.ciContext.rsq_render(toIntermediateImage: imageOut) else {return}
+        let date2 = Date()
+        print("created CVPixelBuffer in \(date2.timeIntervalSince1970 - date1.timeIntervalSince1970)")
+        edittedMask = CIImage(cvPixelBuffer: buffer)
+        let date3 = Date()
+        print("erase finished in \(date3.timeIntervalSince1970 - date.timeIntervalSince1970)")
+
+        return
     }
+    
     
     func convert(ciImage: CIImage) -> UIImage? {
         let context =  CIContext(options: [kCIContextWorkingFormat: kCIFormatRGBAh])
@@ -135,6 +200,10 @@ class EditorViewController: UIViewController {
             outputImage = UIImage(cgImage: aRef)
         }
         return outputImage
+    }
+    
+    @IBAction func didSlide(_ slider: UISlider) {
+        self.sliderVal.text = "\(slider.value)"
     }
     
     func updateMarker(center: CGPoint) {
@@ -153,7 +222,31 @@ class EditorViewController: UIViewController {
     }
     
     @IBAction func resetButtonPressed(_ sender: Any) {
-        edittedMask = CIImage(image: image!)
+        edittedMask = CIImage(cgImage: image!.cgImage!)
         glkImage?.image = edittedMask
+        glkImage?.setNeedsDisplay()
+//        imageView.image = image
     }
+}
+
+extension CIContext {
+    func rsq_render(toIntermediateImage image: CIImage?) -> CVPixelBuffer? {
+//        var intermediateImage: CIImage? = nil
+        let size: CGSize? = image?.extent.size
+        var pixelBuffer: CVPixelBuffer? = nil
+        let status = CVPixelBufferCreate(kCFAllocatorDefault, Int(size!.width), Int(size!.height), kCVPixelFormatType_32ARGB, [kCVPixelBufferIOSurfacePropertiesKey as String: [:]] as CFDictionary?, &pixelBuffer)
+        
+        if status == kCVReturnSuccess {
+            if let anImage = image, let aBuffer = pixelBuffer {
+                render(anImage, to: aBuffer)
+            }
+//            if let aBuffer = pixelBuffer {
+//                intermediateImage = CIImage(cvPixelBuffer: aBuffer)
+//            }
+        }
+
+            return pixelBuffer
+//        return intermediateImage
+    }
+
 }

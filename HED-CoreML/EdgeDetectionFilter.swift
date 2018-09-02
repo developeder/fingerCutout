@@ -17,15 +17,90 @@ import UIKit
     var color1: CIColor?
     var color2: CIColor?
     var color3: CIColor?
-    var color4: CIColor?
-    var color5: CIColor?
     var magicMask: CIImage?
+    var tolerance: Float = 4000
+    var velocity: CGFloat = 0.0
     override init()
     {
         super.init()
         let url = Bundle.main.url(forResource: "default", withExtension: "metallib")!
         let data = try! Data(contentsOf: url)
         edgeDetectionKernel = try! CIKernel(functionName: "edgeDetection", fromMetalLibraryData: data)
+    }
+    
+    
+    
+    required init?(coder aDecoder: NSCoder)
+    {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    var edgeDetectionKernel: CIKernel?
+    
+    override var outputImage: CIImage!
+    {
+        guard let image = inputImage,
+            let mask = magicMask,
+            let kernel = self.edgeDetectionKernel,
+            let color = color else
+        {
+            return nil
+        }
+        
+        let extent = image.extent
+        let arguments = [image,
+                         mask,
+                         color,
+                         color1 ?? color,
+                         color2 ?? color,
+                         color3 ?? color,
+                         tolerance,
+                         center.x,
+                         center.y,
+                         extent.size.width,
+                         extent.size.height,
+                         radius,
+                         velocity] as [Any]
+        return kernel.apply(extent: extent, roiCallback: {(index, rect) in
+            return rect
+            } , arguments: arguments)
+    }
+}
+
+extension UIImage {
+    
+    func getPixelColor(pos: CGPoint) -> UIColor {
+        
+        if let pixelData = self.cgImage?.dataProvider?.data {
+            let data: UnsafePointer<UInt8> = CFDataGetBytePtr(pixelData)
+            
+            let pixelInfo: Int = ((Int(self.size.width) * Int(pos.y)) + Int(pos.x)) * 4
+            
+            let r = CGFloat(data[pixelInfo+0]) / CGFloat(255.0)
+            let g = CGFloat(data[pixelInfo+1]) / CGFloat(255.0)
+            let b = CGFloat(data[pixelInfo+2]) / CGFloat(255.0)
+            let a = CGFloat(data[pixelInfo+3]) / CGFloat(255.0)
+            let color = UIColor(red: r, green: g, blue: b, alpha: a)
+            return color
+        } else {
+            //IF something is wrong I returned WHITE, but change as needed
+            return UIColor.white
+        }
+    }
+    
+//    func getAlpha(pos: CGPoint) -> CGFloat {
+//
+//        if let pixelData = self.cgImage?.dataProvider?.data {
+//            let data: UnsafePointer<UInt8> = CFDataGetBytePtr(pixelData)
+//
+//            let pixelInfo: Int = ((Int(self.size.width) * Int(pos.y)) + Int(pos.x)) * 4
+//            let a = CGFloat(data[pixelInfo+3]) / CGFloat(255.0)
+//            return a
+//        } else {
+//            return 0.0
+//        }
+//    }
+}
 //        edgeDetectionKernel =  CIKernel(source:
 //            "kernel vec4 colorOverlayFilter(sampler image, __color color," +
 //            "__color color1, __color color2, __color color3, __color color4, __color color5," +
@@ -83,79 +158,3 @@ import UIKit
 //                "return premultiply(outRgba);" +
 //            "}"
 //        )
-    }
-    
-    
-    
-    required init?(coder aDecoder: NSCoder)
-    {
-        fatalError("init(coder:) has not been implemented")
-    }
-    
-    var edgeDetectionKernel: CIKernel?
-    
-    override var outputImage: CIImage!
-    {
-        guard let image = inputImage,
-            let mask = magicMask,
-            let kernel = self.edgeDetectionKernel,
-            let color = color else
-        {
-            return nil
-        }
-        
-        let extent = image.extent
-        let arguments = [image,
-                         mask,
-                         color,
-                         color1 ?? color,
-                         color2 ?? color,
-                         color3 ?? color,
-//                         color4 ?? color,
-//                         color5 ?? color,
-                         4500.0,
-                         center.x,
-                         center.y,
-                         extent.size.width,
-                         extent.size.height,
-                         radius] as [Any]
-        return kernel.apply(extent: extent, roiCallback: {(index, rect) in
-            return rect
-            } , arguments: arguments)
-    }
-}
-
-extension UIImage {
-    
-    func getPixelColor(pos: CGPoint) -> UIColor {
-        
-        if let pixelData = self.cgImage?.dataProvider?.data {
-            let data: UnsafePointer<UInt8> = CFDataGetBytePtr(pixelData)
-            
-            let pixelInfo: Int = ((Int(self.size.width) * Int(pos.y)) + Int(pos.x)) * 4
-            
-            let r = CGFloat(data[pixelInfo+0]) / CGFloat(255.0)
-            let g = CGFloat(data[pixelInfo+1]) / CGFloat(255.0)
-            let b = CGFloat(data[pixelInfo+2]) / CGFloat(255.0)
-            let a = CGFloat(data[pixelInfo+3]) / CGFloat(255.0)
-            let color = UIColor(red: r, green: g, blue: b, alpha: a)
-            return color
-        } else {
-            //IF something is wrong I returned WHITE, but change as needed
-            return UIColor.white
-        }
-    }
-    
-//    func getAlpha(pos: CGPoint) -> CGFloat {
-//        
-//        if let pixelData = self.cgImage?.dataProvider?.data {
-//            let data: UnsafePointer<UInt8> = CFDataGetBytePtr(pixelData)
-//            
-//            let pixelInfo: Int = ((Int(self.size.width) * Int(pos.y)) + Int(pos.x)) * 4
-//            let a = CGFloat(data[pixelInfo+3]) / CGFloat(255.0)
-//            return a
-//        } else {
-//            return 0.0
-//        }
-//    }
-}
