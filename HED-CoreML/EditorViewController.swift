@@ -21,6 +21,7 @@ class EditorViewController: UIViewController {
     
     var buffer: MTLBuffer?
     var image: UIImage?
+    var superPixels: UIImage?
     var marker: UIView?
     var glkImage: MetalImageView?
     var eaglContext: EAGLContext?
@@ -70,6 +71,8 @@ class EditorViewController: UIViewController {
             let cgImage = image.cgImage else {
                 return
         }
+        superPixels = OpenCVWrapper.generateSuperPixels(image);
+        imageView.image = superPixels
 //        let length = image.size.width * image.size.height
         
 //        buffer = device.makeBuffer(bytes: getImageUnsafePointer(image: image)!, length: Int(length), options: MTLResourceOptions.storageModeShared)

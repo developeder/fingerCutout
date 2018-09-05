@@ -59,7 +59,7 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
         } else if (segue.identifier == segueToEditorVC) {
             let vc = segue.destination as! EditorViewController
             let map = sender as! [String: UIImage]
-            vc.image = map["image"]
+            vc.image = OpenCVWrapper.normalize(map["image"])
             let mask = CIImage(cgImage: UIImage(named: "fitted_mask.png")!.cgImage!)
             vc.magicImage = mask
 //            vc.edgeImage = map["edgesImage"]

@@ -18,6 +18,9 @@
 		080F46B21F0A464C00588C92 /* UIImage+CVPixelBuffer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 080F46B11F0A464800588C92 /* UIImage+CVPixelBuffer.swift */; };
 		080F46B41F0A46E800588C92 /* UIImage+Resize.swift in Sources */ = {isa = PBXBuildFile; fileRef = 080F46B31F0A46E800588C92 /* UIImage+Resize.swift */; };
 		080F46B71F0A4AFA00588C92 /* pic1.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 080F46B61F0A4AF400588C92 /* pic1.jpg */; };
+		3CF71EEF2140540B0023744E /* opencv2.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3CF71EEE2140540B0023744E /* opencv2.framework */; };
+		3CF71EF12140542E0023744E /* ImageProcessor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3CF71EF02140542E0023744E /* ImageProcessor.swift */; };
+		3CF71EF5214054D20023744E /* OpenCVWrapper.mm in Sources */ = {isa = PBXBuildFile; fileRef = 3CF71EF4214054D20023744E /* OpenCVWrapper.mm */; };
 		F80FBB552133E46800C9420F /* edgeDetectionFilter.metal in Sources */ = {isa = PBXBuildFile; fileRef = F80FBB542133E46800C9420F /* edgeDetectionFilter.metal */; };
 		F80FBB5B2133F7CA00C9420F /* ImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F80FBB5A2133F7CA00C9420F /* ImageView.swift */; };
 		F80FBB5D213426D500C9420F /* fitted_mask.png in Resources */ = {isa = PBXBuildFile; fileRef = F80FBB5C213426D400C9420F /* fitted_mask.png */; };
@@ -47,6 +50,12 @@
 		080F46B11F0A464800588C92 /* UIImage+CVPixelBuffer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImage+CVPixelBuffer.swift"; sourceTree = "<group>"; };
 		080F46B31F0A46E800588C92 /* UIImage+Resize.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImage+Resize.swift"; sourceTree = "<group>"; };
 		080F46B61F0A4AF400588C92 /* pic1.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = pic1.jpg; sourceTree = "<group>"; };
+		3CF71EEE2140540B0023744E /* opencv2.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = opencv2.framework; path = externals/opencv2.framework; sourceTree = "<group>"; };
+		3CF71EF02140542E0023744E /* ImageProcessor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageProcessor.swift; sourceTree = "<group>"; };
+		3CF71EF2214054D20023744E /* HED-CoreML-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "HED-CoreML-Bridging-Header.h"; sourceTree = "<group>"; };
+		3CF71EF3214054D20023744E /* OpenCVWrapper.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = OpenCVWrapper.h; sourceTree = "<group>"; };
+		3CF71EF4214054D20023744E /* OpenCVWrapper.mm */ = {isa = PBXFileReference; explicitFileType = sourcecode.cpp.objcpp; path = OpenCVWrapper.mm; sourceTree = "<group>"; };
+		3CF71EF6214055BB0023744E /* PrefixHeader.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PrefixHeader.pch; sourceTree = "<group>"; };
 		F80FBB542133E46800C9420F /* edgeDetectionFilter.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = edgeDetectionFilter.metal; sourceTree = "<group>"; };
 		F80FBB5A2133F7CA00C9420F /* ImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageView.swift; sourceTree = "<group>"; };
 		F80FBB5C213426D400C9420F /* fitted_mask.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = fitted_mask.png; sourceTree = "<group>"; };
@@ -68,6 +77,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3CF71EEF2140540B0023744E /* opencv2.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -77,6 +87,9 @@
 		080F467E1F09821200588C92 = {
 			isa = PBXGroup;
 			children = (
+				3CF71EF2214054D20023744E /* HED-CoreML-Bridging-Header.h */,
+				3CF71EF6214055BB0023744E /* PrefixHeader.pch */,
+				3CF71EEE2140540B0023744E /* opencv2.framework */,
 				080F46891F09821200588C92 /* HED-CoreML */,
 				080F46881F09821200588C92 /* Products */,
 			);
@@ -93,6 +106,8 @@
 		080F46891F09821200588C92 /* HED-CoreML */ = {
 			isa = PBXGroup;
 			children = (
+				3CF71EF3214054D20023744E /* OpenCVWrapper.h */,
+				3CF71EF4214054D20023744E /* OpenCVWrapper.mm */,
 				F80FBBEE2124573C0096A1B9 /* FloodFill */,
 				080F468A1F09821200588C92 /* AppDelegate.swift */,
 				080F468C1F09821200588C92 /* AffectViewController.swift */,
@@ -110,6 +125,7 @@
 				F80FBB542133E46800C9420F /* edgeDetectionFilter.metal */,
 				F80FBB5A2133F7CA00C9420F /* ImageView.swift */,
 				F80FBB5E213817E900C9420F /* ImageProcessKernel.swift */,
+				3CF71EF02140542E0023744E /* ImageProcessor.swift */,
 			);
 			path = "HED-CoreML";
 			sourceTree = "<group>";
@@ -235,6 +251,8 @@
 				F80FBBF5212457570096A1B9 /* ImageBuffer.swift in Sources */,
 				F80FBB5B2133F7CA00C9420F /* ImageView.swift in Sources */,
 				F80FBBE9212450EC0096A1B9 /* EditorViewController.swift in Sources */,
+				3CF71EF5214054D20023744E /* OpenCVWrapper.mm in Sources */,
+				3CF71EF12140542E0023744E /* ImageProcessor.swift in Sources */,
 				F80FBB552133E46800C9420F /* edgeDetectionFilter.metal in Sources */,
 				F80FBB5F213817E900C9420F /* ImageProcessKernel.swift in Sources */,
 				F8B02480212F05B1006D5D09 /* OpenGLImageView.swift in Sources */,
@@ -313,6 +331,7 @@
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREFIX_HEADER = "$(SRCROOT)/PrefixHeader.pch";
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
 					"$(inherited)",
@@ -370,6 +389,7 @@
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_PREFIX_HEADER = "$(SRCROOT)/PrefixHeader.pch";
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
 				GCC_WARN_UNDECLARED_SELECTOR = YES;
@@ -391,13 +411,17 @@
 				CLANG_ENABLE_MODULES = YES;
 				COREML_CODEGEN_LANGUAGE = Swift;
 				DEVELOPMENT_TEAM = DPZ963XT95;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/externals",
+				);
 				INFOPLIST_FILE = "HED-CoreML/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				MTLLINKER_FLAGS = "-cikernel";
 				MTL_COMPILER_FLAGS = "-fcikernel";
 				PRODUCT_BUNDLE_IDENTIFIER = "me.s1ddok.HED-CoreML";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_OBJC_BRIDGING_HEADER = "";
+				SWIFT_OBJC_BRIDGING_HEADER = "HED-CoreML-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 4.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -411,13 +435,17 @@
 				CLANG_ENABLE_MODULES = YES;
 				COREML_CODEGEN_LANGUAGE = Swift;
 				DEVELOPMENT_TEAM = DPZ963XT95;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/externals",
+				);
 				INFOPLIST_FILE = "HED-CoreML/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				MTLLINKER_FLAGS = "-cikernel";
 				MTL_COMPILER_FLAGS = "-fcikernel";
 				PRODUCT_BUNDLE_IDENTIFIER = "me.s1ddok.HED-CoreML";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_OBJC_BRIDGING_HEADER = "";
+				SWIFT_OBJC_BRIDGING_HEADER = "HED-CoreML-Bridging-Header.h";
 				SWIFT_VERSION = 4.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
