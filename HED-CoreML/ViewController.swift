@@ -22,7 +22,6 @@ class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavig
     override func viewDidLoad() {
         super.viewDidLoad()
         self.setupButton()
-        self.openCVTitle.text = OpenCVWrapper.openCvVersionString()
     }
     
     func setupButton() {
