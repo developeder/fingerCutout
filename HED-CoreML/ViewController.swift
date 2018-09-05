@@ -15,11 +15,14 @@ let segueToEditorVC = "toEditorViewController"
 class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     
     @IBOutlet var startButton: UIButton!
+    @IBOutlet var openCVTitle: UILabel!
+    
     let hedSO = HED_so()
     
     override func viewDidLoad() {
         super.viewDidLoad()
         self.setupButton()
+        self.openCVTitle.text = OpenCVWrapper.openCvVersionString()
     }
     
     func setupButton() {

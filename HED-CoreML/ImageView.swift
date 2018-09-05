@@ -94,6 +94,7 @@ class MetalImageView: MTKView
                          bounds: bounds,
                          colorSpace: colorSpace)
         
+        
 //        if copyTexture == nil {
 //            let descriptor = MTLTextureDescriptor.texture2DDescriptor(pixelFormat: targetTexture.pixelFormat, width: Int(image.extent.size.width), height: Int(image.extent.size.height), mipmapped: true)
 //            descriptor.usage = targetTexture.usage
