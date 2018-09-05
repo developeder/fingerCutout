@@ -19,6 +19,7 @@ class EditorViewController: UIViewController {
     @IBOutlet var sizeSider: UISlider!
     @IBOutlet var resetButton: UIButton!
     
+    var counter: Int = 0
     var buffer: MTLBuffer?
     var image: UIImage?
     var marker: UIView?
@@ -26,12 +27,12 @@ class EditorViewController: UIViewController {
     var eaglContext: EAGLContext?
     var magicImage: CIImage?
     var didAppear = false
+    var imageData = [[UIColor]]()
     var colors = [UIColor]()
     var reversY = true
-    private var edittedMask: CIImage? {
-        didSet {
-        }
-    }
+    private var edittedMask: CIImage?
+    private var sourceImage: CIImage?
+    var lastPoint: CGPoint?
     
     func getImageUnsafePointer(image: UIImage) -> UnsafeRawPointer? {
         let data = UIImagePNGRepresentation(image) as NSData?
@@ -39,46 +40,28 @@ class EditorViewController: UIViewController {
         return ptr
     }
     
-//    private func getAlphaChannel(image: CGImage) -> UnsafeRawPointer? {
-//        let width = image.width
-//        let height = image.height
-//        var imageData = UInt8()
-//        let strideLength = width + (width % 4)
-//
-//        let colorSpace = CGColorSpaceCreateDeviceGray()
-//        let ctx1 = CGContext(data: imageData, width: width, height: height, bitsPerComponent: 8, bytesPerRow: width, space: colorSpace, bitmapInfo: CGBitmapInfo(rawValue: CGImageAlphaInfo.none.rawValue).rawValue | 0)
-//
-//        var ctx = CGContext(data: nil, width: width, height: height, bitsPerComponent: 8, bytesPerRow: strideLength, space: CGColorSpaceCreateDeviceGray(), bitmapInfo: CGImageAlphaInfo.alphaOnly.rawValue)
-//
-//
-//        ctx.draw(in: image,  CGRect(x: 0, y: 0, width: CGFloat(width), height: CGFloat(height)))
-//
-//        let alphaData = UInt8() as? [UInt8]
-//
-//
-//        func calloc(height: width?) {
-//
-//            calloc(1, *width*heightsizeof(unsignedchar)
-//        }
-//        return nil
-//    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        //        guard let device = MTLCreateSystemDefaultDevice(),
         guard let image = self.image,
             let cgImage = image.cgImage else {
                 return
         }
-//        let length = image.size.width * image.size.height
-        
-//        buffer = device.makeBuffer(bytes: getImageUnsafePointer(image: image)!, length: Int(length), options: MTLResourceOptions.storageModeShared)
-        edittedMask = CIImage(cgImage: cgImage)
 
+        edittedMask = CIImage(cgImage: cgImage)
+        let filter = CIFilter(name: "CIMakeVaribleBlur")
+        filter?.setValue(edittedMask, forKeyPath: kCIInputImageKey)
+//        let filterColorControls = CIFilter(name: "CIColorControls")
+//        filterColorControls?.setValue(edittedMask, forKey: kCIInputImageKey)
+//        filterColorControls?.setValue(1.25, forKey: kCIInputContrastKey)
+//        sourceImage = filterColorControls?.outputImage
+        sourceImage = CIImage(cgImage: cgImage)
+        
         let ar = image.size.height/image.size.width
         imageViewHeightConstraint.constant = UIApplication.shared.keyWindow!.frame.width * ar
         eaglContext = EAGLContext(api: .openGLES3)
         self.sliderVal.text = "\(slider.value)"
+        self.sizeSliderVal.text = "\(sizeSider.value)"
         
         let navItem = UIBarButtonItem(customView: resetButton)
         self.navigationItem.rightBarButtonItem = navItem
@@ -100,12 +83,28 @@ class EditorViewController: UIViewController {
             self.view.sendSubview(toBack: glkImage!)
             setupGuesters()
             didAppear = true
+            self.view.isUserInteractionEnabled = false
+            DispatchQueue.global().async {
+                let date = Date()
+                print("started createImageData")
+                self.createImageData()
+                let date1 = Date()
+                print("finish createImageData \(date1.timeIntervalSince1970 - date.timeIntervalSince1970)")
+                DispatchQueue.main.async {
+                    self.view.isUserInteractionEnabled = true
+                }
+            }
         }
     }
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
+    }
+    
+    func createImageData() {
+        guard let image = image else {return}
+        imageData = image.getImageData()
     }
     
     func setupGuesters() {
@@ -118,10 +117,27 @@ class EditorViewController: UIViewController {
     
     @objc func didPan(sender: UIGestureRecognizer) {
         let point = sender.location(in: imageView)
-        let velocityPoint = (sender as! UIPanGestureRecognizer).velocity(in: imageView)
-        let velocity = sqrt(pow(velocityPoint.x, 2.0) + pow(velocityPoint.y, 2.0)) / sqrt(pow(imageView.frame.width, 2.0) + pow(imageView.frame.height, 2.0))
-        erase(at: point, velocity: velocity)
+        
+        if lastPoint == nil {
+            erase(at: point)
+        } else {
+            var vector = CGPoint(x: point.x - lastPoint!.x, y: point.y - lastPoint!.y)
+            let distance = hypot(vector.x, vector.y)
+            vector.x /= distance
+            vector.y /= distance
+            
+            for i in stride(from: 0, to: Int(distance), by: 4) {
+                let p = CGPoint(x: lastPoint!.x + CGFloat(i) * vector.x, y: lastPoint!.y + CGFloat(i) * vector.y)
+                erase(at: p)
+            }
+        }
+        updateMetalView()
+
+        lastPoint = point
+        
+        
         if sender.state == .ended || sender.state == .cancelled {
+            lastPoint = nil
             colors = [UIColor]()
             let imageTemp = convert(ciImage: edittedMask!)
             self.edittedMask = CIImage(cgImage: imageTemp!.cgImage!)
@@ -132,24 +148,16 @@ class EditorViewController: UIViewController {
     @objc func didTap(sender: UIGestureRecognizer) {
         colors = [UIColor]()
         let point = sender.location(in: imageView)
-        erase(at: point, velocity: 0.0)
+        erase(at: point)
+        updateMetalView()
+
         let imageTemp = convert(ciImage: edittedMask!)
         self.edittedMask = CIImage(cgImage: imageTemp!.cgImage!)
         reversY = true
     }
     
-    func getLastEdited() -> CIImage? {
-        
-//        if let texture = self.glkImage?.copyTexture,
-//            let image = CIImage(mtlTexture: texture, options: nil) {
-//            return image
-//        }
-        return edittedMask
-    }
-    
-    func erase(at point: CGPoint, velocity: CGFloat) {
+    func erase(at point: CGPoint) {
         let date = Date()
-        reversY = true
         let y = reversY ? point.y : imageView.frame.height - point.y
         reversY = false
         let ciPoint = CGPoint(x: point.x, y: y)
@@ -157,49 +165,60 @@ class EditorViewController: UIViewController {
         let ar = image!.size.width/imageView.bounds.size.width
         let rPoint = CGPoint(x: point.x * ar, y: point.y * ar)
         let rciPoint = CGPoint(x: ciPoint.x * ar, y: ciPoint.y * ar)
+    
+        guard let editted = edittedMask,
+            let source = image
+            else {return}
         
-        guard let editted = edittedMask else {return}
-        
+        if rPoint.x < 0
+            || rPoint.y < 0
+            || rPoint.x > source.size.width - 1
+            || rPoint.x > source.size.width - 1 {
+            return
+        }
         let filter = EdgeDetectionFilter()
-        filter.inputImage = editted//CIImage(cgImage: image!.cgImage!)
+        filter.inputImage = editted
+        filter.sourceImage = sourceImage
+        filter.magicMask = magicImage
         filter.center = rciPoint
         let radius = CGFloat(sizeSider.value) * (editted.extent.height/glkImage!.frame.height)
         filter.radius = radius
-        filter.magicMask = magicImage
         filter.tolerance = slider.value
-        filter.velocity = velocity*0.5
-        colors.append(image!.getPixelColor(pos: rPoint))
-        filter.color = CIColor(cgColor: colors[colors.count-1].cgColor)
-        if colors.count > 1 {
-            filter.color1 = CIColor(cgColor: colors[colors.count-2].cgColor)
+        let color = imageData[Int(rPoint.x)][Int(rPoint.y)]
+        self.colors.append(color)
+        while self.colors.count > 4 {
+            self.colors.remove(at: 0)
         }
-        if colors.count > 2 {
-            filter.color2 = CIColor(cgColor: colors[colors.count-3].cgColor)
-        }
-        if colors.count > 3 {
-            filter.color3 = CIColor(cgColor: colors[colors.count-4].cgColor)
-        }
-        
-        while colors.count > 4 {
-            colors.remove(at: 0)
-        }
-        
-        let imageOut = filter.outputImage//.cropped(to: CGRect(x: point.x - radius, y: imageView.frame.height - point.y - radius, width: 2 * radius, height: 2 * radius))
-        
-        glkImage?.image = imageOut
-        glkImage?.setNeedsDisplay()
-        edittedMask = imageOut
-        let date1 = Date()
-        guard let buffer = glkImage?.ciContext.rsq_render(toIntermediateImage: imageOut) else {return}
-        let date2 = Date()
-        print("created CVPixelBuffer in \(date2.timeIntervalSince1970 - date1.timeIntervalSince1970)")
-        edittedMask = CIImage(cvPixelBuffer: buffer)
-        let date3 = Date()
-        print("erase finished in \(date3.timeIntervalSince1970 - date.timeIntervalSince1970)")
+        filter.prevColors = colors
 
-        return
+        guard let imageOut = filter.outputImage else {return}
+        self.edittedMask = imageOut
+        let date1 = Date()
+        print("erase in \(date1.timeIntervalSince1970 - date.timeIntervalSince1970)")
     }
     
+    func updateMetalView() {
+//        let filter = CIFilter(name: "CIGaussianBlur")
+//        filter?.setValue(self.edittedMask, forKeyPath: kCIInputImageKey)
+//        filter?.setValue(3.0, forKeyPath: kCIInputRadiusKey)
+        self.glkImage?.image = self.edittedMask//filter?.outputImage
+        self.glkImage?.setNeedsDisplay()
+            let date = Date()
+            guard let buffer = self.glkImage?.ciContext.rsq_render(toIntermediateImage: self.edittedMask) else {return}
+            self.edittedMask = CIImage(cvPixelBuffer: buffer)
+            self.reversY = true
+            let date1 = Date()
+            print("updateMetalView in \(date1.timeIntervalSince1970 - date.timeIntervalSince1970)")
+    }
+    
+    var isConverting = false
+    func createIntermediate(image: CIImage) {
+        DispatchQueue.global().async {
+            guard let buffer = self.glkImage?.ciContext.rsq_render(toIntermediateImage: self.edittedMask) else {return}
+            self.edittedMask = CIImage(cvPixelBuffer: buffer)
+            self.reversY = true
+        }
+    }
     
     func convert(ciImage: CIImage) -> UIImage? {
         let context =  CIContext(options: [kCIContextWorkingFormat: kCIFormatRGBAh])
@@ -239,13 +258,11 @@ class EditorViewController: UIViewController {
         edittedMask = CIImage(cgImage: image!.cgImage!)
         glkImage?.image = edittedMask
         glkImage?.setNeedsDisplay()
-//        imageView.image = image
     }
 }
 
 extension CIContext {
     func rsq_render(toIntermediateImage image: CIImage?) -> CVPixelBuffer? {
-//        var intermediateImage: CIImage? = nil
         let size: CGSize? = image?.extent.size
         var pixelBuffer: CVPixelBuffer? = nil
         let status = CVPixelBufferCreate(kCFAllocatorDefault, Int(size!.width), Int(size!.height), kCVPixelFormatType_32ARGB, [kCVPixelBufferIOSurfacePropertiesKey as String: [:]] as CFDictionary?, &pixelBuffer)
@@ -254,13 +271,7 @@ extension CIContext {
             if let anImage = image, let aBuffer = pixelBuffer {
                 render(anImage, to: aBuffer)
             }
-//            if let aBuffer = pixelBuffer {
-//                intermediateImage = CIImage(cvPixelBuffer: aBuffer)
-//            }
         }
-
-            return pixelBuffer
-//        return intermediateImage
+        return pixelBuffer
     }
-
 }

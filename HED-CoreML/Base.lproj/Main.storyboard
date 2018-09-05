@@ -146,7 +146,7 @@
                                 <color key="textColor" red="0.21568627450980393" green="0.16078431372549018" blue="0.20784313725490194" alpha="1" colorSpace="calibratedRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <slider opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" value="35" minValue="20" maxValue="150" translatesAutoresizingMaskIntoConstraints="NO" id="5Tf-KM-mCo">
+                            <slider opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" value="40" minValue="20" maxValue="150" translatesAutoresizingMaskIntoConstraints="NO" id="5Tf-KM-mCo">
                                 <rect key="frame" x="-2" y="686" width="418" height="31"/>
                                 <connections>
                                     <action selector="didSlide:" destination="bpj-1E-CaG" eventType="valueChanged" id="aTg-qF-mjQ"/>
@@ -230,16 +230,25 @@
                                     <action selector="stertButtonPressed:" destination="ygf-94-wHK" eventType="touchUpInside" id="3Eg-km-9N5"/>
                                 </connections>
                             </button>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="L64-hp-tbR">
+                                <rect key="frame" x="186" y="683" width="42" height="21"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <color key="textColor" red="0.37055522200000002" green="0.37056469920000001" blue="0.37055957319999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                         </subviews>
                         <color key="backgroundColor" red="0.04240275584" green="0.79747618050000002" blue="0.85196324479999996" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
+                            <constraint firstItem="L64-hp-tbR" firstAttribute="centerX" secondItem="WeT-W8-dHO" secondAttribute="centerX" id="8TX-q1-JWm"/>
                             <constraint firstItem="rbj-4y-B5n" firstAttribute="centerX" secondItem="WeT-W8-dHO" secondAttribute="centerX" id="GiH-jK-OzH"/>
+                            <constraint firstItem="OoJ-CE-bd6" firstAttribute="bottom" secondItem="L64-hp-tbR" secondAttribute="bottom" constant="32" id="Hpr-A5-rVK"/>
                             <constraint firstItem="rbj-4y-B5n" firstAttribute="centerY" secondItem="WeT-W8-dHO" secondAttribute="centerY" id="xHd-M9-856"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="OoJ-CE-bd6"/>
                     </view>
                     <navigationItem key="navigationItem" id="BlO-r8-MhV"/>
                     <connections>
+                        <outlet property="openCVTitle" destination="L64-hp-tbR" id="p9C-Eh-bHY"/>
                         <outlet property="startButton" destination="rbj-4y-B5n" id="bd6-P7-7pl"/>
                         <segue destination="BYZ-38-t0r" kind="show" identifier="toAffectViewController" id="6S0-kG-y2u"/>
                         <segue destination="bpj-1E-CaG" kind="show" identifier="toEditorViewController" id="TpP-br-9xA"/>
